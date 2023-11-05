@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.example.com/gettingstarted/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Getting Started - CTASM Documentation</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Getting Started";
+        var mkdocs_page_input_path = "gettingstarted.md";
+        var mkdocs_page_url = "/gettingstarted/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> CTASM Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Getting Started</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../sections/">Sections</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../directives/">Compiler Directives</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../instructions/">Instructions</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">CTASM Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="hello-world">Hello World</h1>
+<p>Your first program which prints hello world:</p>
+<pre><code class="language-js">#entry main
+
+#section data
+hello: str &quot;hello world&quot;
+println: str &quot;println&quot;
+
+#section code
+main: {
+    move regA, println
+    move regC, hello
+    call
+
+    move regE, 0
+    exit regE
+}
+</code></pre>
+<p>Copy this code into <code>hello.ctasm</code> and compile with <code>ctasm -c hello.ctasm &amp;&amp; ./out</code>. The <code>-c</code> flag means compile to native C.</p>
+<p>Congratulations! You just compiled and ran your first CTASM program; however, this code can be hard to comprehend for a beginner. Let's look deeper into the program, line by line:</p>
+<ul>
+<li><strong>#entry main</strong>: This tells the VM what function to call at the start of your program.</li>
+<li><strong>#section data</strong>: This declares all the code below it as "data", or static variables. More on sections will be explained later on.</li>
+<li><strong>hello: str "hello world"</strong>: This makes a variable named hello of type string and the value "hello world".</li>
+<li><strong>println: str "println"</strong>: This makes a variable named println of type string and the value "println". This is just used to store the println function name, as it's needed when calling it.</li>
+<li><strong>#section code</strong>: This declared all the code below it as the actual program code. Functions and instructions are declared and written here. More on sections later on.</li>
+<li><strong>main: {</strong>: This declares a function named main and opens a block for all instructions within this function. A block is just a simple <code>{}</code>, just like most other languages.</li>
+<li><strong>move regA, println</strong>: This moves the <code>println</code> data into the <code>A</code> register, which is used for function calling.</li>
+<li><strong>move regC, hello</strong>: This moves the <code>hello</code> data into the <code>C</code> register, which stores the first argument for <code>println</code>. Functions and calling conventions are explained in detail later on.</li>
+<li><strong>call</strong>: This will search for and (if found) call the function whose name is stored in the <code>A</code> register.</li>
+<li><strong>move regE, 0</strong>: This just moves the <code>0</code> constant into the <code>E</code> register.</li>
+<li><strong>exit regE</strong>: This exits the program with the code contained in the <code>E</code> register (in this case, 0). Exiting is required for CTASM programs; otherwise, the VM will complain.</li>
+<li><strong>}</strong>: This marks the end of the main function.</li>
+</ul>
+<h1 id="compiling-multiple-files">Compiling Multiple Files</h1>
+<p>If you want to compile and use multiple files, you must simply provide them all in the <code>ctasm</code> command, and it will automatically compile and link each file to whatever your target output is. </p>
+<p>To use data and code from these other files, you don't have to do any importing since all files automatically include each other safely to make it even easier to use, 
+but you can still implicitly say you're using a separate file by adding <code>#using "otherfile.ctasm"</code> at the top of your file using it. This just tells the compiler to error if the file isn't found in the list of files to compile.</p>
+<h1 id="sections">Sections</h1>
+<p>CTASM uses sections to organize code into different sections. This is done in a similar manner to assembly which does the same thing.</p>
+<p>There are currently 2 different sections in CTASM: <code>code</code> and <code>data</code>. </p>
+<ul>
+<li><strong>Data</strong> - is used to store any static variables in memory before the program even starts. The way this is actually done is dependant on what it compiles to and the implementation of said compiler.</li>
+<li><strong>Code</strong> - is the only required section since it is used to define all the functions and instructions for your code.</li>
+</ul>
+<p>A section is declared using <code>#section &lt;name&gt;</code>.</p>
+<p><a href="../sections/">Detailed explanations of all sections</a>.</p>
+<h1 id="compiler-directives">Compiler Directives</h1>
+<p>Compiler directives are important pieces of code that are used to tell the compiler how to generate the code. This can be anything ranging from which specific version it's using and the entry function to the file name to use in the outputted code and what other files are being used.</p>
+<p>Directives are defined with a <code>#</code> followed by its name and argument(s). For directives, arguments are only separated by a space and an argument encased in double quotes ("many words") will count as one argument.</p>
+<p><a href="../directives/">Full list of directives</a>.</p>
+<h1 id="comments">Comments</h1>
+<pre><code class="language-js">// one line comment
+
+/*
+multi
+line
+comment
+*/
+</code></pre>
+<h1 id="functions">Functions</h1>
+<pre><code class="language-js">main: {
+    move regA, &quot;add&quot; // function name
+    move regC, 34 // x
+    move regD, 35 // y
+    call
+
+    copy regE, regC
+    move regA, &quot;println&quot; // print value
+    call
+
+    move regE, 0
+    exit regE
+}
+
+add: { // x, y
+    add regC, regD // IMPORTANT: add here is the INSTRUCTION. it has NOTHING to do with the functions name
+    copy regB, regE // conventions soon
+    return
+}
+</code></pre>
+<p>At their core, functions are really simple. They just run instructions. There's no automatic type checking or argument counting here without the use of some standard functions. 
+However, you should still follow the <a href="#calling-convention">calling convention</a> and (optionally) declare the arguments in a comment.</p>
+<p><em>Technically</em>, you can overload a function, but it completely overloads it, meaning the lowest definition of the function is the one used at the end.</p>
+<h2 id="hoisting">Hoisting</h2>
+<p>Functions can be used before they're declared: <code>add</code> is declared after <code>main</code>, but is still being used within it. This is due to the VM loading all functions into memory before running.</p>
+<h2 id="calling-convention">Calling Convention</h2>
+<p>By default, the CTASM calling convention passes the first 4 arguments through registers <code>C</code>, <code>D</code>, <code>F</code>, and <code>G</code> in that order. Arguments beyond the fourth get pushed to the stack following a left-to-right order.</p>
+<p>If the function uses a variable number of arguments (REST parameters or varargs), they should be pushed onto the stack from left to right, followed by the count of REST parameters. Even when there's less than 4 regular arguments, REST parameters should still only be on the stack. 
+REST parameters should always come after the normal arguments.</p>
+<p>The callee (the function being called) is always responsible for clearing the passed arguments and restoring the stack to its state before being called. This will optionally be enforced by the caller (the instruction doing the call).</p>
+<p>The caller may optionally allocate shadow space on the stack for the callee; however, if this is done, the caller is also responsible for removing this shadow space after the function call. 
+If the function needs arguments passed to the stack, this space must be allocated before pushing the arguments.</p>
+<p>If the function returns any value, this is done by moving the returned value to the <code>E</code> register before returning. 
+In cases where multiple values are returned, the callee will push each value to the stack in places of shadow space and then move the amount of returned values to the <code>E</code> register.</p>
+<p><em>The standard library will always be following these conventions.</em></p>
+<h2 id="shadow-space">Shadow Space</h2>
+<p>Shadow space refers to some reserved space on the stack that can be used by a callee to modify stack space when returning without the VM noticing and complaining about it. 
+This is used in the default <a href="#calling-convention">calling convention</a> for returning multiple values on the stack and avoiding any safety checks the VM may perform.</p>
+<p>Shadow space on the stack can also serve other purposes, such as:</p>
+<ul>
+<li><strong>Editing passed arguments</strong>: By allocating shadow space before passing arguments to the stack, the callee is allowed to initialize some of this space with a modified value, thus changing it. This strategy can be used to successfully pass arguments by reference if needed.</li>
+<li><strong>Buffer and Data Storage</strong>: In some situations, the caller may want to see the data the callee used without actually returning it. This is useful for ensuring the data is right and debugging the function.</li>
+<li><strong>Exception Handling</strong>: For functions that may throw an exception, it's important to reserve shadow space for the internal exception handler to use for storing possibly important information as well as the exception details. This is done so the caller may catch and handle the exception if the shadow space isn't clean after the function call. The reason the internal handler doesn't allocate its own stack space is because the VM is strictly not allowed to modify any data accessible to the programmer internally.</li>
+</ul>
+<p><em>The standard library mostly doesn't require this, but if it does, it will be well documented as to what to do.</em></p>
+<h1 id="storing-data">Storing Data</h1>
+<p>The CTVM has 4 different ways of storing data: <code>stack</code>, <code>heap</code>, <code>scope</code>, and <code>registers</code>. These all have their pros and cons depending on how you wish to use your data. </p>
+<h2 id="the-stack">The Stack</h2>
+<p>The stack is the most common place to store data. It's fast, efficient, and doesn't have any special code. </p>
+<p>It has 4 built-in instructions to manipulate it:</p>
+<ul>
+<li><strong>push</strong>: Will add a new value to the top of the stack.</li>
+<li><strong>pop</strong>: Will remove the top value on the stack and put it in a register or fully delete it.</li>
+<li><strong>get</strong>: Will get a copy of a stack value at an offset and put it in a register.</li>
+<li><strong>dup</strong>: Will duplicate the top of the stack.</li>
+</ul>
+<h2 id="the-heap">The Heap</h2>
+<p>The heap is like the heap used on native compiled languages such as C, C++, and Rust, but this one is virtual and managed by the VM, so memory leaks will be detected and cleaned up. It's useful in case a function wants to allocate some special data and return it.</p>
+<p>The heap has 4 built-in instructions to manipulate it:</p>
+<ul>
+<li><strong>alloc</strong>: Will allocate a value worth of space on the heap and put the address of it in the <code>H</code> register.</li>
+<li><strong>free</strong>: Will remove and free a value from the heap with the address stored in the <code>H</code> register. Undefined behavior if the address doesn't actually point to somewhere on the heap.</li>
+<li><strong>read</strong>: Will read a value on the heap with the address stored in the <code>H</code> register and put it in a register. Undefined behavior if the address doesn't actually point to somewhere on the heap.</li>
+<li><strong>write</strong>: Will pop the stack and write that value to the heap on address, which is stored in the <code>H</code> register. Undefined behavior if the address doesn't actually point to somewhere on the heap.</li>
+</ul>
+<h2 id="the-varscope">The Varscope</h2>
+<p>The variable scope isn't really useful for much since it requires searching every time a variable is accessed. The only use is for named values. It has 5 built-in instructions.</p>
+<h2 id="the-registers">The Registers</h2>
+<p>The registers are the most important part of the VM and your program. They hold any data and are the fastest to access. They are also used for most other instructions to even work.</p>
+<p>There are 2 built-in register instructions:</p>
+<ul>
+<li><strong>move</strong>: Will move a new value into a register.</li>
+<li><strong>copy</strong>: Will copy the value of one register to another.</li>
+</ul>
+<h1 id="immediate-values">Immediate Values</h1>
+<p>When data is used directly in an instruction, it's called an immediate. These are automatically typed unlike the <a href="../sections/#data-section">data section</a> which requires implicitly specifying the type of a data. </p>
+<p>When an immediate is used, the VM or compiler may choose to cache it so it's faster to access if it's being used multiple times.</p>
+<h1 id="strings">Strings</h1>
+<p>A string in the CTVM is a 16 byte structure which consists of 2 parts: a pointer to the c-string and the size of the string. Strings are be default immutable unless special standard functions are used to edit it.</p>
+<h1 id="arrays">Arrays</h1>
+<p>There's currently no built-in way to have arrays other than pushing the elements to the stack and knowing the offsets at all times, but this approach is potantially dangerous since the stack is a fixed size of around 1 megabyte.</p>
+<h1 id="instructions">Instructions</h1>
+<p>Instructions are the main thing that run your program. There's many different and they all perform different operations. </p>
+<p>An instruction consists of the opcode (push, pop, etc.) and some arguments separated by commas depending on the opcode.</p>
+<p><a href="../instructions/">Full list of instructions</a>.</p>
+<h1 id="statements-and-expressions">Statements and Expressions</h1>
+<p>This expects you know all the instructions.</p>
+<h2 id="if">If</h2>
+<pre><code class="language-js">main: {
+    move regB, 69
+    move regC, 420
+
+    comp eq, regB, regC
+
+    move regA, &quot;println&quot;
+
+    jit if_true, regB
+
+    move regC, &quot;they are not equal&quot;
+    call
+    goto if_end
+
+if_true:
+    move regC, &quot;they are equal&quot;
+    call
+
+if_end:
+    move regE, 0
+    exit regE
+}
+</code></pre>
+<p>This snippet jumps to if_true if 69 == 420 and runs some other code that goes to if_end if it's not equal.
+There's many ways to do this, but this is my preferred way.</p>
+<h2 id="for-loops">For Loops</h2>
+<pre><code class="language-js">main: {
+    move regA, &quot;println&quot;
+
+    move regE, 10 // amount of iterations
+    move regF, 0
+L1:
+    copy regF, regC
+
+    call
+
+    move regC, 1
+    add regF, regC
+    copy regB, regF
+
+    comp lte, regF, regE // regF &lt;= regE (10)
+    jit L1, regB
+
+    move regE, 0
+    exit regE
+}
+</code></pre>
+<p>This snippet is the CTASM equivalent of:</p>
+<pre><code class="language-js">for (int i = 0; i &lt;= 10; i++) {
+    println(i);
+}
+</code></pre>
+<h2 id="do-while-loops">Do While Loops</h2>
+<pre><code class="language-js">main: {
+    move regA, &quot;println&quot;
+
+    move regB, 1
+L1:
+    move regC, &quot;spam&quot;
+    call
+
+    jit L1, regB
+
+    // Unreachable
+    move regE, 0
+    exit regE
+}
+</code></pre>
+<p>This snippet if the CTASM equivalent of:</p>
+<pre><code class="language-js">do {
+    println(&quot;spam&quot;);
+} while (1);
+</code></pre>
+<h2 id="while-loops">While Loops</h2>
+<pre><code class="language-js">main: {
+    move regA, &quot;println&quot;
+
+    move regB, 1
+    goto L1
+CL1:
+    move regC, &quot;spam&quot;
+    call
+L1:
+    jit CL1, regB
+}
+</code></pre>
+<p>This snippet is the CTASM equivalent of:</p>
+<pre><code class="language-js">while (1) {
+    println(&quot;spam&quot;);
+}
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../sections/" class="btn btn-neutral float-right" title="Sections">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../sections/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
